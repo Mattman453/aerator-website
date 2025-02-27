@@ -119,7 +119,6 @@ mod tests {
     #[test]
     #[should_panic]
     fn create_thread_pool2() {
-        let pool = ThreadPool::new(0);
-
+        let _pool = ThreadPool::new(0);
     }
 }
