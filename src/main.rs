@@ -90,3 +90,32 @@ fn process_request(request_line: String) -> (String, String) {
         "resources/".to_owned() + request_line + ".html",
     )
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_process_request1() {
+        let request_line = "GET / HTTP/1.1";
+        let (status_line, filename) = process_request(request_line.to_string());
+        assert_eq!(status_line, "HTTP/1.1 200 OK");
+        assert_eq!(filename, "resources/hello.html");
+    }
+
+    #[test]
+    fn test_process_request2() {
+        let request_line = "GET /hello.css HTTP/1.1";
+        let (status_line, filename) = process_request(request_line.to_string());
+        assert_eq!(status_line, "HTTP/1.1 200 OK");
+        assert_eq!(filename, "resources/hello.css");
+    }
+
+    #[test]
+    fn test_process_request3() {
+        let request_line = "GET /warm_grass HTTP/1.1";
+        let (status_line, filename) = process_request(request_line.to_string());
+        assert_eq!(status_line, "HTTP/1.1 200 OK");
+        assert_eq!(filename, "resources/warm_grass.html");
+    }
+}
