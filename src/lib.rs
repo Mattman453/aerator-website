@@ -73,6 +73,15 @@ struct Worker {
 }
 
 impl Worker {
+    /// Create a new Worker.
+    ///
+    /// The id is the thread number being created. It is not representative of the value held by the os.
+    ///
+    /// The receiver is the communication channel that receives jobs to be executed
+    ///
+    /// # Panics
+    ///
+    /// The 'new' function will panic if the thread already has a lock on the receiver
     fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
         let thread = thread::spawn(move || loop {
             let message = receiver.lock().unwrap().recv();
