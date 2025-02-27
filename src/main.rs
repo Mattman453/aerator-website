@@ -70,7 +70,7 @@ fn process_request(request_line: String) -> (String, String) {
         );
     }
 
-    if request_line.contains(".") {
+    if request_line.contains(".css") {
         // println!("resources/{request_line}");
         return (
             "HTTP/1.1 200 OK".to_string(),
