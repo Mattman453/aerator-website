@@ -117,6 +117,13 @@ mod tests {
     }
 
     #[test]
+    fn test_trim_request4() {
+        let request_line = "GET /types HTTP/1.1";
+        let result = trim_request(request_line.to_string());
+        assert_eq!(result, "types");
+    }
+
+    #[test]
     fn test_process_request1() {
         let request_line = "GET / HTTP/1.1";
         let (status_line, filename) = process_request(request_line.to_string());
