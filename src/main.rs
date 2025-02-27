@@ -146,4 +146,12 @@ mod tests {
         assert_eq!(status_line, "HTTP/1.1 200 OK");
         assert_eq!(filename, "resources/warm_grass.html");
     }
+
+    #[test]
+    fn test_process_request4() {
+        let request_line = "GET /types HTTP/1.1";
+        let (status_line, filename) = process_request(request_line.to_string());
+        assert_eq!(status_line, "HTTP/1.1 404 NOT FOUND");
+        assert_eq!(filename, "resources/404.html");
+    }
 }
