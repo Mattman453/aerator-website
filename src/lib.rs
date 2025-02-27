@@ -105,3 +105,21 @@ impl Worker {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn create_thread_pool1() {
+        let pool = ThreadPool::new(4);
+        assert_eq!(4, pool.workers.len());
+    }
+
+    #[test]
+    #[should_panic]
+    fn create_thread_pool2() {
+        let pool = ThreadPool::new(0);
+
+    }
+}
