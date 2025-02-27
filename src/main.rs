@@ -96,6 +96,27 @@ mod tests {
     use super::*;
 
     #[test]
+    fn test_trim_request1() {
+        let request_line = "GET / HTTP/1.1";
+        let result = trim_request(request_line.to_string());
+        assert_eq!(result, "");
+    }
+
+    #[test]
+    fn test_trim_request2() {
+        let request_line = "GET /hello.css HTTP/1.1";
+        let result = trim_request(request_line.to_string());
+        assert_eq!(result, "hello.css");
+    }
+
+    #[test]
+    fn test_trim_request3() {
+        let request_line = "GET /warm_grass HTTP/1.1";
+        let result = trim_request(request_line.to_string());
+        assert_eq!(result, "warm_grass");
+    }
+
+    #[test]
     fn test_process_request1() {
         let request_line = "GET / HTTP/1.1";
         let (status_line, filename) = process_request(request_line.to_string());
