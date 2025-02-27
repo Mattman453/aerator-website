@@ -84,8 +84,8 @@ fn process_request(request_line: String) -> (String, String) {
         );
     };
 
-    return (
+    (
         "HTTP/1.1 200 OK".to_string(),
         "resources/".to_owned() + request_line + ".html",
-    );
+    )
 }
