@@ -62,8 +62,8 @@ fn process_request(request_line: String) -> (String, String) {
     // println!("{}", request_line);
     let request_line = request_line.get(1..).unwrap();
     // println!("{}", request_line);
+
     if request_line.is_empty() {
-        // println!("Empty request");
         return (
             "HTTP/1.1 200 OK".to_string(),
             "resources/hello.html".to_string(),
@@ -71,7 +71,6 @@ fn process_request(request_line: String) -> (String, String) {
     }
 
     if request_line.contains(".css") {
-        // println!("resources/{request_line}");
         return (
             "HTTP/1.1 200 OK".to_string(),
             "resources/".to_owned() + request_line,
