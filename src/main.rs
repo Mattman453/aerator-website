@@ -45,13 +45,19 @@ fn handle_connection(mut stream: TcpStream) {
     stream.flush().unwrap();
 }
 
-fn process_request(request_line: String) -> (String, String) {
+fn trim_request(request_line: String) -> &str {
     let request_line = request_line.trim();
     let mut request_line = request_line.split(" ");
     let request_line = request_line.nth(1).unwrap();
     // println!("{}", request_line);
     let request_line = request_line.get(1..).unwrap();
     // println!("{}", request_line);
+
+    request_line
+}
+
+fn process_request(request_line: String) -> (String, String) {
+    let request_line = trim_request(request_line);
 
     if request_line.is_empty() {
         return (
