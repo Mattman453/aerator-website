@@ -63,11 +63,20 @@ fn process_request(request_line: String) -> (String, String) {
     let request_line = request_line.get(1..).unwrap();
     // println!("{}", request_line);
     if request_line.is_empty() {
+        // println!("Empty request");
         return (
             "HTTP/1.1 200 OK".to_string(),
             "resources/hello.html".to_string(),
         );
     }
+
+    if request_line.contains(".") {
+        // println!("resources/{request_line}");
+        return (
+            "HTTP/1.1 200 OK".to_string(),
+            "resources/".to_owned() + request_line,
+        );
+    };
 
     let possible_requests = fs::read_to_string("resources/possible_requests.txt").unwrap();
     if !possible_requests.contains(request_line) {
@@ -76,13 +85,6 @@ fn process_request(request_line: String) -> (String, String) {
             "resources/404.html".to_string(),
         );
     }
-
-    if request_line.contains(".css") {
-        return (
-            "HTTP/1.1 200 OK".to_string(),
-            "resources/".to_owned() + request_line,
-        );
-    };
 
     (
         "HTTP/1.1 200 OK".to_string(),
