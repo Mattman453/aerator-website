@@ -46,6 +46,8 @@ fn handle_connection(mut stream: TcpStream) {
 }
 
 /// Takes the request line containing the desired page or file and return just the filename
+///
+/// The request_line is the string to be processed
 fn trim_request(request_line: String) -> String {
     let request_line = request_line.trim();
     let mut request_line = request_line.split(" ");
