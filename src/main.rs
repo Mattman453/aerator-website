@@ -7,7 +7,6 @@ use std::thread::available_parallelism;
 fn main() {
     let listener = TcpListener::bind(("127.0.0.1", 7878)).unwrap();
     let pool = ThreadPool::new(available_parallelism().unwrap().into());
-    // println!("{}", available_parallelism().unwrap().get());
 
     for stream in listener.incoming() {
         let stream = stream.unwrap();
@@ -25,7 +24,7 @@ fn handle_connection(mut stream: TcpStream) {
     let request_line = buf_reader.lines().next(); //.unwrap().unwrap();
 
     if request_line.is_none() {
-        println!("No lines to process");
+        // println!("No lines to process");
         return;
     }
     let request_line = request_line.unwrap();
