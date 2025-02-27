@@ -39,11 +39,13 @@ fn handle_connection(mut stream: TcpStream) {
 
     // println!("Request: {http_request:#?}");
 
-    let (status_line, filename) = if request_line == "GET / HTTP/1.1" {
-        ("HTTP/1.1 200 OK\r\n\r\n", "resources/hello.html")
+    /*let (status_line, filename) = if request_line == "GET / HTTP/1.1" {
+        ("HTTP/1.1 200 OK", "resources/hello.html")
     } else {
-        ("HTTP/1.1 404 NOT FOUND\r\n\r\n", "resources/404.html")
-    };
+        ("HTTP/1.1 404 NOT FOUND", "resources/404.html")
+    };*/
+
+    let (status_line, filename) = process_request(request_line);
 
     let contents = fs::read_to_string(filename).unwrap();
     let length = contents.len();
@@ -51,4 +53,39 @@ fn handle_connection(mut stream: TcpStream) {
     let response = format!("{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}");
 
     stream.write_all(response.as_bytes()).unwrap();
+}
+
+fn process_request(request_line: String) -> (String, String) {
+    let request_line = request_line.trim();
+    let mut request_line = request_line.split(" ");
+    let request_line = request_line.nth(1).unwrap();
+    // println!("{}", request_line);
+    let request_line = request_line.get(1..).unwrap();
+    // println!("{}", request_line);
+    if request_line.is_empty() {
+        return (
+            "HTTP/1.1 200 OK".to_string(),
+            "resources/hello.html".to_string(),
+        );
+    }
+
+    let possible_requests = fs::read_to_string("resources/possible_requests.txt").unwrap();
+    if !possible_requests.contains(request_line) {
+        return (
+            "HTTP/1.1 404 NOT FOUND".to_string(),
+            "resources/404.html".to_string(),
+        );
+    }
+
+    if request_line.contains(".css") {
+        return (
+            "HTTP/1.1 200 OK".to_string(),
+            "resources/".to_owned() + request_line,
+        );
+    };
+
+    return (
+        "HTTP/1.1 200 OK".to_string(),
+        "resources/".to_owned() + request_line + ".html",
+    );
 }
