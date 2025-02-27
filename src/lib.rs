@@ -35,6 +35,13 @@ impl ThreadPool {
         }
     }
 
+    /// Pass a function to be run by a thread in the ThreadPool
+    ///
+    /// The f is the function to be run
+    ///
+    /// # Panics
+    ///
+    /// The 'execute' function will panic if the receiver has been closed
     pub fn execute<F>(&self, f: F)
     where
         F: FnOnce() + Send + 'static,
@@ -46,6 +53,7 @@ impl ThreadPool {
 }
 
 impl Drop for ThreadPool {
+    /// Applies steps for deallocating and closing ThreadPool Safely
     fn drop(&mut self) {
         drop(self.sender.take());
 
