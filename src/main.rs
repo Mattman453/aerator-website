@@ -1,13 +1,15 @@
 use aerator_website::ThreadPool;
+use std::fs;
 use std::io::{BufRead, BufReader, Write};
 use std::net::{TcpListener, TcpStream};
-use std::fs;
+use std::thread::available_parallelism;
 
 fn main() {
     let listener = TcpListener::bind(("127.0.0.1", 7878)).unwrap();
-    let pool = ThreadPool::new(4);
+    let pool = ThreadPool::new(available_parallelism().unwrap().into());
+    // println!("{}", available_parallelism().unwrap().get());
 
-    for stream in listener.incoming().take(2) {
+    for stream in listener.incoming() {
         let stream = stream.unwrap();
 
         pool.execute(|| {
@@ -24,11 +26,13 @@ fn handle_connection(mut stream: TcpStream) {
 
     if request_line.is_none() {
         println!("No lines to process");
-        return
+        return;
     }
     let request_line = request_line.unwrap();
 
-    if request_line.is_err() { return }
+    if request_line.is_err() {
+        return;
+    }
     let request_line = request_line.unwrap();
 
     // let http_request: Vec<_> = buf_reader.lines().map(|result| result.unwrap()).take_while(|line| !line.is_empty()).collect();
@@ -44,8 +48,7 @@ fn handle_connection(mut stream: TcpStream) {
     let contents = fs::read_to_string(filename).unwrap();
     let length = contents.len();
 
-    let response =
-        format!("{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}");
+    let response = format!("{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}");
 
     stream.write_all(response.as_bytes()).unwrap();
 }

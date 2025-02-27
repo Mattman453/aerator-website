@@ -24,7 +24,8 @@ impl ThreadPool {
 
         ThreadPool {
             workers,
-            sender: Some(sender) }
+            sender: Some(sender),
+        }
     }
 
     pub fn execute<F>(&self, f: F)
@@ -76,6 +77,7 @@ impl Worker {
 
         Worker {
             id,
-            thread: Some(thread) }
+            thread: Some(thread),
+        }
     }
 }
