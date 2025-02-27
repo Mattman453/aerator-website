@@ -45,7 +45,8 @@ fn handle_connection(mut stream: TcpStream) {
     stream.flush().unwrap();
 }
 
-fn trim_request(request_line: String) -> &str {
+/// Takes the request line containing the desired page or file and return just the filename
+fn trim_request(request_line: String) -> String {
     let request_line = request_line.trim();
     let mut request_line = request_line.split(" ");
     let request_line = request_line.nth(1).unwrap();
@@ -53,11 +54,12 @@ fn trim_request(request_line: String) -> &str {
     let request_line = request_line.get(1..).unwrap();
     // println!("{}", request_line);
 
-    request_line
+    request_line.to_string()
 }
 
 fn process_request(request_line: String) -> (String, String) {
-    let request_line = trim_request(request_line);
+    let holder = trim_request(request_line);
+    let request_line = holder.as_str();
 
     if request_line.is_empty() {
         return (
