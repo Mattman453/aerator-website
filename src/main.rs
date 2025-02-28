@@ -96,6 +96,7 @@ mod tests {
     use super::*;
 
     #[test]
+    /// Ensure an empty is returned
     fn test_trim_request1() {
         let request_line = "GET / HTTP/1.1";
         let result = trim_request(request_line.to_string());
