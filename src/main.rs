@@ -104,6 +104,7 @@ mod tests {
     }
 
     #[test]
+    /// Ensure the correct css filename is returned
     fn test_trim_request2() {
         let request_line = "GET /hello.css HTTP/1.1";
         let result = trim_request(request_line.to_string());
