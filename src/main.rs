@@ -155,6 +155,7 @@ mod tests {
     }
 
     #[test]
+    /// Ensure the error response is generated and the not found file is requested
     fn test_process_request4() {
         let request_line = "GET /types HTTP/1.1";
         let (status_line, filename) = process_request(request_line.to_string());
