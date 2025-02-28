@@ -1,6 +1,12 @@
 use std::sync::{mpsc, Arc, Mutex};
 use std::thread;
 
+/// Struct for containing multiple threads. All threads share a common sender
+///
+/// The workers value is the vector containing all worker structs. Workers contain the thread, and
+/// it's id is recorded.
+///
+/// The sender value is the shared value of the object that sends jobs to Workers.
 pub struct ThreadPool {
     workers: Vec<Worker>,
     sender: Option<mpsc::Sender<Job>>,
