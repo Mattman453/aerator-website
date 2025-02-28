@@ -86,6 +86,8 @@ impl Worker {
         let thread = thread::spawn(move || loop {
             let message = receiver.lock().unwrap().recv();
 
+            // Check if message is actually received. If the job exists, run it. If an error
+            // occurred, shut down the thread by breaking the loop of the closure.
             match message {
                 Ok(job) => {
                     println!("Worker {id} got a job; executing.");
