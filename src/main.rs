@@ -137,6 +137,7 @@ mod tests {
     }
 
     #[test]
+    /// Ensure the proper response is generated and the correct file is generated
     fn test_process_request2() {
         let request_line = "GET /hello.css HTTP/1.1";
         let (status_line, filename) = process_request(request_line.to_string());
