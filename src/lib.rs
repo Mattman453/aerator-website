@@ -126,6 +126,7 @@ mod tests {
 
     #[test]
     #[should_panic]
+    /// Make a threadpool. Should not be able to make a threadpool with 0 threads
     fn create_thread_pool3() {
         let _pool = ThreadPool::new(0);
     }
