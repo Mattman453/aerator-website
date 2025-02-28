@@ -73,6 +73,12 @@ impl Drop for ThreadPool {
     }
 }
 
+/// Struct for containing each thread JoinHandle and an id.
+///
+/// The id value is a simple number assigned at creation. It does not represent anything given by
+/// the OS.
+///
+/// The thread value is the value to join the thread back to the program when the variable is dropped.
 struct Worker {
     id: usize,
     thread: Option<thread::JoinHandle<()>>,
