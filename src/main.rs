@@ -112,6 +112,7 @@ mod tests {
     }
 
     #[test]
+    /// Ensure the correct phrase is found "warm_grass"
     fn test_trim_request3() {
         let request_line = "GET /warm_grass HTTP/1.1";
         let result = trim_request(request_line.to_string());
