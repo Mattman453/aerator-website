@@ -146,6 +146,7 @@ mod tests {
     }
 
     #[test]
+    /// Ensure the proper response is generated and the correct file is requested
     fn test_process_request3() {
         let request_line = "GET /warm_grass HTTP/1.1";
         let (status_line, filename) = process_request(request_line.to_string());
