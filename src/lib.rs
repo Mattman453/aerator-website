@@ -118,7 +118,8 @@ mod tests {
     }
 
     #[test]
-    /// Make a threadpool that works for the highest end cpu currently available for a single cpu system (AMD EPYC 9965 w/ 192 cores and 384 threads)
+    /// Make a threadpool that works for the highest end cpu currently available for a single cpu
+    /// system (AMD EPYC 9965 w/ 192 cores and 384 threads)
     fn create_thread_pool2() {
         let pool = ThreadPool::new(384);
         assert_eq!(384, pool.workers.len());
