@@ -117,6 +117,12 @@ mod tests {
     }
 
     #[test]
+    fn create_thread_pool2() {
+        let pool = ThreadPool::new(384);
+        assert_eq!(384, pool.workers.len());
+    }
+
+    #[test]
     #[should_panic]
     fn create_thread_pool3() {
         let _pool = ThreadPool::new(0);
