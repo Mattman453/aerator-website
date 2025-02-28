@@ -118,7 +118,7 @@ mod tests {
 
     #[test]
     #[should_panic]
-    fn create_thread_pool2() {
+    fn create_thread_pool3() {
         let _pool = ThreadPool::new(0);
     }
 }
