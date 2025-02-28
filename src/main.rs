@@ -120,6 +120,7 @@ mod tests {
     }
 
     #[test]
+    /// Ensure proper trimming down to types
     fn test_trim_request4() {
         let request_line = "GET /types HTTP/1.1";
         let result = trim_request(request_line.to_string());
