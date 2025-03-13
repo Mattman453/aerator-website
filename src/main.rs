@@ -35,6 +35,7 @@ fn handle_connection(mut stream: TcpStream) {
     let request_line = request_line.unwrap();
 
     let (status_line, filename) = process_request(request_line);
+    println!("Status Line: {}, Filename: {}", status_line, filename);
 
     let contents = fs::read_to_string(filename).unwrap();
     let length = contents.len();
@@ -66,14 +67,14 @@ fn process_request(request_line: String) -> (String, String) {
     if request_line.is_empty() {
         return (
             "HTTP/1.1 200 OK".to_string(),
-            "resources/hello.html".to_string(),
+            "resources/html/hello.html".to_string(),
         );
     }
 
     if request_line.contains(".css") {
         return (
             "HTTP/1.1 200 OK".to_string(),
-            "resources/".to_owned() + request_line,
+            "resources/css/".to_owned() + request_line,
         );
     };
 
@@ -81,13 +82,13 @@ fn process_request(request_line: String) -> (String, String) {
     if !possible_requests.contains(request_line) {
         return (
             "HTTP/1.1 404 NOT FOUND".to_string(),
-            "resources/404.html".to_string(),
+            "resources/html/404.html".to_string(),
         );
     }
 
     (
         "HTTP/1.1 200 OK".to_string(),
-        "resources/".to_owned() + request_line + ".html",
+        "resources/html/".to_owned() + request_line + ".html",
     )
 }
 
@@ -133,7 +134,7 @@ mod tests {
         let request_line = "GET / HTTP/1.1";
         let (status_line, filename) = process_request(request_line.to_string());
         assert_eq!(status_line, "HTTP/1.1 200 OK");
-        assert_eq!(filename, "resources/hello.html");
+        assert_eq!(filename, "resources/html/hello.html");
     }
 
     #[test]
@@ -142,7 +143,7 @@ mod tests {
         let request_line = "GET /hello.css HTTP/1.1";
         let (status_line, filename) = process_request(request_line.to_string());
         assert_eq!(status_line, "HTTP/1.1 200 OK");
-        assert_eq!(filename, "resources/hello.css");
+        assert_eq!(filename, "resources/css/hello.css");
     }
 
     #[test]
