@@ -2,24 +2,33 @@ use aerator_website::ThreadPool;
 use std::fs;
 use std::io::{BufRead, BufReader, Write};
 use std::net::{TcpListener, TcpStream};
+use std::sync::Arc;
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::thread::available_parallelism;
 
 fn main() {
     let listener = TcpListener::bind(("127.0.0.1", 7878)).unwrap();
     let pool = ThreadPool::new(available_parallelism().unwrap().into());
+    let stop = Arc::new(AtomicBool::new(false));
 
     for stream in listener.incoming() {
+        if stop.load(Ordering::Relaxed) == true {
+            break;
+        }
+
         let stream = stream.unwrap();
 
+        let bool = stop.clone();
+
         pool.execute(|| {
-            handle_connection(stream);
+            handle_connection(stream, bool);
         });
     }
 
     println!("Shutting down.");
 }
 
-fn handle_connection(mut stream: TcpStream) {
+fn handle_connection(mut stream: TcpStream, stop: Arc<AtomicBool>) {
     let buf_reader = BufReader::new(&stream);
     let request_line = buf_reader.lines().next(); //.unwrap().unwrap();
 
@@ -33,6 +42,10 @@ fn handle_connection(mut stream: TcpStream) {
         return;
     }
     let request_line = request_line.unwrap();
+    if request_line.contains("q7w8e9r0") {
+        stop.store(true, Ordering::Relaxed);
+        return;
+    }
 
     let (status_line, filename) = process_request(request_line);
 
