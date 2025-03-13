@@ -23,6 +23,11 @@ h1 {
     margin-bottom: 10px;
 }
 
+a {
+    color: white;
+    text-decoration: none;
+}
+
 .subtitle {
     font-size: 1.2rem;
     font-style: italic;
