@@ -74,7 +74,7 @@ fn process_request(request_line: String) -> (String, String) {
     if request_line.contains(".css") {
         return (
             "HTTP/1.1 200 OK".to_string(),
-            "resources/css/".to_owned() + request_line,
+            "resources/".to_owned() + request_line,
         );
     };
 
