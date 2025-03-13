@@ -13,6 +13,15 @@ fn main() {
 
     for stream in listener.incoming() {
         if stop.load(Ordering::Relaxed) == true {
+            let status_line = "HTTP/1.1 200 OK";
+            let contents = fs::read_to_string("resources/html/closed.html").unwrap();
+            let length = contents.len();
+            let response = format!("{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}");
+
+            let mut stream = stream.unwrap();
+            stream.write_all(response.as_bytes()).unwrap();
+            stream.flush().unwrap();
+
             break;
         }
 
