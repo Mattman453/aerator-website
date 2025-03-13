@@ -33,10 +33,8 @@ fn handle_connection(mut stream: TcpStream) {
         return;
     }
     let request_line = request_line.unwrap();
-    // println!("{}", request_line);
 
     let (status_line, filename) = process_request(request_line);
-    // println!("Status Line: {}, Filename: {}", status_line, filename);
 
     let contents = fs::read_to_string(filename).unwrap();
     let length = contents.len();
