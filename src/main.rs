@@ -33,9 +33,10 @@ fn handle_connection(mut stream: TcpStream) {
         return;
     }
     let request_line = request_line.unwrap();
+    // println!("{}", request_line);
 
     let (status_line, filename) = process_request(request_line);
-    println!("Status Line: {}, Filename: {}", status_line, filename);
+    // println!("Status Line: {}, Filename: {}", status_line, filename);
 
     let contents = fs::read_to_string(filename).unwrap();
     let length = contents.len();
@@ -140,7 +141,7 @@ mod tests {
     #[test]
     /// Ensure the proper response is generated and the correct file is generated
     fn test_process_request2() {
-        let request_line = "GET /hello.css HTTP/1.1";
+        let request_line = "GET /css/hello.css HTTP/1.1";
         let (status_line, filename) = process_request(request_line.to_string());
         assert_eq!(status_line, "HTTP/1.1 200 OK");
         assert_eq!(filename, "resources/css/hello.css");
@@ -152,7 +153,7 @@ mod tests {
         let request_line = "GET /warm_grass HTTP/1.1";
         let (status_line, filename) = process_request(request_line.to_string());
         assert_eq!(status_line, "HTTP/1.1 200 OK");
-        assert_eq!(filename, "resources/warm_grass.html");
+        assert_eq!(filename, "resources/html/warm_grass.html");
     }
 
     #[test]
@@ -161,6 +162,6 @@ mod tests {
         let request_line = "GET /types HTTP/1.1";
         let (status_line, filename) = process_request(request_line.to_string());
         assert_eq!(status_line, "HTTP/1.1 404 NOT FOUND");
-        assert_eq!(filename, "resources/404.html");
+        assert_eq!(filename, "resources/html/404.html");
     }
 }
