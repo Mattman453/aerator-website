@@ -1,10 +1,13 @@
+extern crate chunked_transfer;
 use aerator_website::ThreadPool;
 use std::fs;
-use std::io::{BufRead, BufReader, Write};
+use std::fs::File;
+use std::io::{BufRead, BufReader, Read, Write};
 use std::net::{TcpListener, TcpStream};
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::thread::available_parallelism;
+use chunked_transfer::Encoder;
 
 fn main() {
     let listener = TcpListener::bind(("127.0.0.1", 7878)).unwrap();
@@ -57,6 +60,41 @@ fn handle_connection(mut stream: TcpStream, stop: Arc<AtomicBool>) {
     }
 
     let (status_line, filename) = process_request(request_line);
+    // println!("{filename}");
+
+    if filename.contains(".jpg") {
+        let mut file = File::open(filename).unwrap();
+        let mut buf = Vec::new();
+        file.read_to_end(&mut buf).unwrap();
+
+        // println!("File Read.");
+
+        let mut encoded = Vec::new();
+        {
+            let mut encoder = Encoder::with_chunks_size(&mut encoded, 8);
+            // println!("Encoder Created");
+            // encoder.write(&buf).unwrap();
+        }
+        // println!("Encoded");
+
+        let headers = [
+            "HTTP/1.1 200 OK",
+            "Content-type: image/jpeg",
+            "Transfer-Encoding: chunked",
+            "\r\n"
+        ];
+        let mut response = headers.join("\r\n")
+            .to_string()
+            .into_bytes();
+        response.extend(encoded);
+
+        // match stream.write(&response) {
+        //     Ok(_) => println!("Response sent"),
+        //     Err(e) => println!("Failed sending response: {e}"),
+        // }
+        // stream.flush().unwrap();
+        return
+    }
 
     let contents = fs::read_to_string(filename).unwrap();
     let length = contents.len();
@@ -83,6 +121,7 @@ fn trim_request(request_line: String) -> String {
 
 fn process_request(request_line: String) -> (String, String) {
     let holder = trim_request(request_line);
+    // println!("{}", holder);
     let request_line = holder.as_str();
 
     if request_line.is_empty() {
@@ -98,6 +137,13 @@ fn process_request(request_line: String) -> (String, String) {
             "resources/".to_owned() + request_line,
         );
     };
+
+    if request_line.contains(".jpg") {
+        return (
+            "HTTP/1.1 200 OK".to_string(),
+            "resources/".to_owned() + request_line,
+            )
+    }
 
     let possible_requests = fs::read_to_string("resources/possible_requests.txt").unwrap();
     if !possible_requests.contains(request_line) {
