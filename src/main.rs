@@ -62,39 +62,39 @@ fn handle_connection(mut stream: TcpStream, stop: Arc<AtomicBool>) {
     let (status_line, filename) = process_request(request_line);
     // println!("{filename}");
 
-    if filename.contains(".jpg") {
-        let mut file = File::open(filename).unwrap();
-        let mut buf = Vec::new();
-        file.read_to_end(&mut buf).unwrap();
-
-        // println!("File Read.");
-
-        let mut encoded = Vec::new();
-        {
-            let mut encoder = Encoder::with_chunks_size(&mut encoded, 8);
-            // println!("Encoder Created");
-            // encoder.write(&buf).unwrap();
-        }
-        // println!("Encoded");
-
-        let headers = [
-            "HTTP/1.1 200 OK",
-            "Content-type: image/jpeg",
-            "Transfer-Encoding: chunked",
-            "\r\n"
-        ];
-        let mut response = headers.join("\r\n")
-            .to_string()
-            .into_bytes();
-        response.extend(encoded);
-
-        // match stream.write(&response) {
-        //     Ok(_) => println!("Response sent"),
-        //     Err(e) => println!("Failed sending response: {e}"),
-        // }
-        // stream.flush().unwrap();
-        return
-    }
+    // if filename.contains(".jpg") {
+    //     let mut file = File::open(filename).unwrap();
+    //     let mut buf = Vec::new();
+    //     file.read_to_end(&mut buf).unwrap();
+    //
+    //     // println!("File Read.");
+    //
+    //     let mut encoded = Vec::new();
+    //     {
+    //         let mut encoder = Encoder::with_chunks_size(&mut encoded, 8);
+    //         // println!("Encoder Created");
+    //         // encoder.write(&buf).unwrap();
+    //     }
+    //     // println!("Encoded");
+    //
+    //     let headers = [
+    //         "HTTP/1.1 200 OK",
+    //         "Content-type: image/jpeg",
+    //         "Transfer-Encoding: chunked",
+    //         "\r\n"
+    //     ];
+    //     let mut response = headers.join("\r\n")
+    //         .to_string()
+    //         .into_bytes();
+    //     response.extend(encoded);
+    //
+    //     // match stream.write(&response) {
+    //     //     Ok(_) => println!("Response sent"),
+    //     //     Err(e) => println!("Failed sending response: {e}"),
+    //     // }
+    //     // stream.flush().unwrap();
+    //     return
+    // }
 
     let contents = fs::read_to_string(filename).unwrap();
     let length = contents.len();
