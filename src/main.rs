@@ -1,4 +1,3 @@
-extern crate chunked_transfer;
 use aerator_website::ThreadPool;
 use std::fs;
 use std::fs::File;
@@ -7,7 +6,6 @@ use std::net::{TcpListener, TcpStream};
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::thread::available_parallelism;
-use chunked_transfer::Encoder;
 
 fn main() {
     let listener = TcpListener::bind(("127.0.0.1", 7878)).unwrap();
@@ -67,8 +65,6 @@ fn handle_connection(mut stream: TcpStream, stop: Arc<AtomicBool>) {
         let mut contents = Vec::new();
         file.read_to_end(&mut contents).unwrap();
         let length = contents.len();
-
-        // println!("File Read.");
 
         let response = format!("HTTP/1.1 200 OK\r\nContent-Type: image/jpg\r\nContent-Length: {length}\r\n\r\n");
 
