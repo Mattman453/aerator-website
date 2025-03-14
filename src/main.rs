@@ -1,13 +1,13 @@
 extern crate chunked_transfer;
 use aerator_website::ThreadPool;
 use std::fs;
-use std::fs::File;
-use std::io::{BufRead, BufReader, Read, Write};
+// use std::fs::File;
+use std::io::{BufRead, BufReader, Write};
 use std::net::{TcpListener, TcpStream};
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::thread::available_parallelism;
-use chunked_transfer::Encoder;
+// use chunked_transfer::Encoder;
 
 fn main() {
     let listener = TcpListener::bind(("127.0.0.1", 7878)).unwrap();
@@ -144,6 +144,13 @@ fn process_request(request_line: String) -> (String, String) {
     //         "resources/".to_owned() + request_line,
     //         )
     // }
+
+    if request_line.contains(".html") {
+        return (
+            "HTTP/1.1 200 OK".to_string(),
+            "resources/html/".to_owned() + request_line,
+            )
+    }
 
     let possible_requests = fs::read_to_string("resources/possible_requests.txt").unwrap();
     if !possible_requests.contains(request_line) {
