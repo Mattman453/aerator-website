@@ -45,7 +45,7 @@ a {
 .tabs {
     display: flex;
     position: absolute;
-    top: -36px;
+    top: -38px;
     left: 20px;
 }
 
@@ -53,7 +53,7 @@ a {
 .tab {
     background-color: #3a3a3a;
     color: white;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: bold;
     padding: 10px 10px;
     border-top-left-radius: 8px;
