@@ -138,12 +138,12 @@ fn process_request(request_line: String) -> (String, String) {
         );
     };
 
-    if request_line.contains(".jpg") {
-        return (
-            "HTTP/1.1 200 OK".to_string(),
-            "resources/".to_owned() + request_line,
-            )
-    }
+    // if request_line.contains(".jpg") {
+    //     return (
+    //         "HTTP/1.1 200 OK".to_string(),
+    //         "resources/".to_owned() + request_line,
+    //         )
+    // }
 
     let possible_requests = fs::read_to_string("resources/possible_requests.txt").unwrap();
     if !possible_requests.contains(request_line) {
