@@ -4,11 +4,64 @@
     justify-content: center;
     align-items: center;
     height: 50vh;
+    color: black;
     /*background-color: #1a1f25;*/
 }
 
 .subtitle {
-    font-size: 1.2rem;
+    font-size: 1.6rem;
     font-style: italic;
     opacity: 0.8;
+    color: black;
+}
+
+.container {
+    width: 80%;
+    margin: auto;
+    padding: 20px;
+}
+
+.tabs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.tab {
+    background: #444;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-transform: uppercase;
+}
+
+.tab a {
+    text-decoration: none;
+    color: white;
+}
+
+.content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.text {
+    width: 55%;
+    text-align: left;
+}
+
+.content img {
+    width: 60%;
+    /* Adjust size */
+    max-width: 450px;
+    /* Prevent it from being too large */
+    border-radius: 10px;
+    /* Optional: adds rounded corners */
 }
