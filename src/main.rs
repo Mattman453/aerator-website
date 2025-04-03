@@ -68,29 +68,7 @@ fn handle_connection(mut stream: TcpStream, stop: Arc<AtomicBool>) {
     // println!("{filename}");
 
     if filename.contains(".jpg") || filename.contains(".jpeg") || filename.contains(".png") {
-        let mut file = File::open(&filename).unwrap();
-        let mut contents = Vec::new();
-        file.read_to_end(&mut contents).unwrap();
-        let length = contents.len();
-        let response: String;
-
-        if filename.contains(".jpg") {
-            response = format!(
-                "HTTP/1.1 200 OK\r\nContent-Type: image/jpg\r\nContent-Length: {length}\r\n\r\n"
-            );
-        } else if filename.contains(".jpeg") {
-            response = format!(
-                "HTTP/1.1 200 OK\r\nContent-Type: image/jpeg\r\nContent-Length: {length}\r\n\r\n"
-            );
-        } else {
-            response = format!(
-                "HTTP/1.1 200 OK\r\nContent-Type: image/png\r\nContent-Length: {length}\r\n\r\n"
-            );
-        }
-
-        stream.write_all(&response.as_bytes()).unwrap();
-        stream.write_all(&contents).unwrap();
-        stream.flush().unwrap();
+        handle_images(filename, &stream);
         return;
     }
 
@@ -100,6 +78,32 @@ fn handle_connection(mut stream: TcpStream, stop: Arc<AtomicBool>) {
     let response = format!("{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}");
 
     stream.write_all(response.as_bytes()).unwrap();
+    stream.flush().unwrap();
+}
+
+fn handle_images(filename: String, mut stream: &TcpStream) {
+    let mut file = File::open(&filename).unwrap();
+    let mut contents = Vec::new();
+    file.read_to_end(&mut contents).unwrap();
+    let length = contents.len();
+    let response: String;
+
+    if filename.contains(".jpg") {
+        response = format!(
+            "HTTP/1.1 200 OK\r\nContent-Type: image/jpg\r\nContent-Length: {length}\r\n\r\n"
+        );
+    } else if filename.contains(".jpeg") {
+        response = format!(
+            "HTTP/1.1 200 OK\r\nContent-Type: image/jpeg\r\nContent-Length: {length}\r\n\r\n"
+        );
+    } else {
+        response = format!(
+            "HTTP/1.1 200 OK\r\nContent-Type: image/png\r\nContent-Length: {length}\r\n\r\n"
+        );
+    }
+
+    stream.write_all(&response.as_bytes()).unwrap();
+    stream.write_all(&contents).unwrap();
     stream.flush().unwrap();
 }
 
