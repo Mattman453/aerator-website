@@ -175,17 +175,17 @@ fn process_request(request_line: String) -> (String, String) {
 
     let possible_requests = fs::read_to_string("resources/possible_requests.txt").unwrap();
 
-    if request_line.contains(".html") {
-        return (
-            "HTTP/1.1 200 OK".to_string(),
-            "resources/html/".to_owned() + request_line,
-        );
-    }
-
     if !possible_requests.contains(request_line) {
         return (
             "HTTP/1.1 404 NOT FOUND".to_string(),
             "resources/html/404.html".to_string(),
+        );
+    }
+
+    if request_line.contains(".html") {
+        return (
+            "HTTP/1.1 200 OK".to_string(),
+            "resources/html/".to_owned() + request_line,
         );
     }
 
