@@ -3,8 +3,8 @@ use std::fs;
 use std::fs::File;
 use std::io::{BufRead, BufReader, Read, Write};
 use std::net::{TcpListener, TcpStream};
-use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::Arc;
 use std::thread::available_parallelism;
 
 fn main() {
@@ -75,17 +75,23 @@ fn handle_connection(mut stream: TcpStream, stop: Arc<AtomicBool>) {
         let response: String;
 
         if filename.contains(".jpg") {
-            response = format!("HTTP/1.1 200 OK\r\nContent-Type: image/jpg\r\nContent-Length: {length}\r\n\r\n");
+            response = format!(
+                "HTTP/1.1 200 OK\r\nContent-Type: image/jpg\r\nContent-Length: {length}\r\n\r\n"
+            );
         } else if filename.contains(".jpeg") {
-            response = format!("HTTP/1.1 200 OK\r\nContent-Type: image/jpeg\r\nContent-Length: {length}\r\n\r\n");
+            response = format!(
+                "HTTP/1.1 200 OK\r\nContent-Type: image/jpeg\r\nContent-Length: {length}\r\n\r\n"
+            );
         } else {
-            response = format!("HTTP/1.1 200 OK\r\nContent-Type: image/png\r\nContent-Length: {length}\r\n\r\n");
+            response = format!(
+                "HTTP/1.1 200 OK\r\nContent-Type: image/png\r\nContent-Length: {length}\r\n\r\n"
+            );
         }
 
         stream.write_all(&response.as_bytes()).unwrap();
         stream.write_all(&contents).unwrap();
         stream.flush().unwrap();
-        return
+        return;
     }
 
     let contents = fs::read_to_string(filename).unwrap();
@@ -130,19 +136,21 @@ fn process_request(request_line: String) -> (String, String) {
         );
     };
 
-    if request_line.contains(".jpg") || request_line.contains(".jpeg") || request_line.contains(".png") {
+    if request_line.contains(".jpg")
+        || request_line.contains(".jpeg")
+        || request_line.contains(".png")
+    {
         return if request_line.contains("background") {
             (
                 "HTTP/1.1 200 OK".to_string(),
                 "resources/".to_owned() + request_line,
-                )
-        }
-        else {
+            )
+        } else {
             (
                 "HTTP/1.1 200 OK".to_string(),
                 "resources/html/".to_owned() + request_line,
             )
-        }
+        };
     }
 
     let possible_requests = fs::read_to_string("resources/possible_requests.txt").unwrap();
@@ -151,7 +159,7 @@ fn process_request(request_line: String) -> (String, String) {
         return (
             "HTTP/1.1 200 OK".to_string(),
             "resources/html/".to_owned() + request_line,
-            )
+        );
     }
 
     if !possible_requests.contains(request_line) {
