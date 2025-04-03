@@ -1,7 +1,7 @@
 use aerator_website::ThreadPool;
 use std::fs;
 use std::fs::File;
-use std::io::{BufRead, BufReader, Read, Write};
+use std::io::{BufRead, BufReader, Error, Read, Write};
 use std::net::{TcpListener, TcpStream};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
@@ -14,14 +14,14 @@ fn main() {
 
     for stream in listener.incoming() {
         if stop.load(Ordering::Relaxed) == true {
-            let status_line = "HTTP/1.1 200 OK";
-            let contents = fs::read_to_string("resources/html/closed.html").unwrap();
-            let length = contents.len();
-            let response = format!("{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}");
-
-            let mut stream = stream.unwrap();
-            stream.write_all(response.as_bytes()).unwrap();
-            stream.flush().unwrap();
+            // let status_line = "HTTP/1.1 200 OK";
+            // let contents = fs::read_to_string("resources/html/closed.html").unwrap();
+            // let length = contents.len();
+            // let response = format!("{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}");
+            //
+            // let mut stream = stream.unwrap();
+            // stream.write_all(response.as_bytes()).unwrap();
+            // stream.flush().unwrap();
 
             break;
         }
@@ -41,18 +41,11 @@ fn main() {
 fn handle_connection(mut stream: TcpStream, stop: Arc<AtomicBool>) {
     let buf_reader = BufReader::new(&stream);
     let request_line = buf_reader.lines().next(); //.unwrap().unwrap();
-
-    if request_line.is_none() {
-        // println!("No lines to process");
-        return;
-    }
-    let request_line = request_line.unwrap();
-
-    if request_line.is_err() {
+    let request_line = unwrap_line(request_line);
+    if request_line.is_empty() {
         return;
     }
 
-    let request_line = request_line.unwrap();
     if request_line.contains("q7w8e9r0") {
         handle_closing(&stop, &stream);
         return;
@@ -73,6 +66,20 @@ fn handle_connection(mut stream: TcpStream, stop: Arc<AtomicBool>) {
 
     stream.write_all(response.as_bytes()).unwrap();
     stream.flush().unwrap();
+}
+
+fn unwrap_line(request_line: Option<Result<String, Error>>) -> String {
+    if request_line.is_none() {
+        // println!("No lines to process");
+        return "".to_string();
+    }
+    let request_line = request_line.unwrap();
+
+    if request_line.is_err() {
+        return "".to_string();
+    }
+
+    request_line.unwrap()
 }
 
 fn handle_closing(stop: &Arc<AtomicBool>, mut stream: &TcpStream) {
