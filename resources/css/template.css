@@ -45,20 +45,25 @@ a {
 /* Tabs container */
 .tabs {
     display: flex;
-    position: absolute;
-    top: -38px;
-    left: 20px;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
 }
 
 /* Individual tab styling */
 .tab {
-    background-color: #3a3a3a;
+    background: #444;
     color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-transform: uppercase;
+    /*background-color: #3a3a3a;*/
+    /*color: white;*/
     font-size: 16px;
     font-weight: bold;
-    padding: 10px 10px;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
+    /*padding: 10px 10px;*/
+    /*border-top-left-radius: 8px;*/
+    /*border-top-right-radius: 8px;*/
     margin-right: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
