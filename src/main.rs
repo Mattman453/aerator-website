@@ -51,16 +51,10 @@ fn handle_connection(mut stream: TcpStream, stop: Arc<AtomicBool>) {
     if request_line.is_err() {
         return;
     }
+
     let request_line = request_line.unwrap();
     if request_line.contains("q7w8e9r0") {
-        stop.store(true, Ordering::Relaxed);
-        let status_line = "HTTP/1.1 200 OK";
-        let contents = fs::read_to_string("resources/html/closed.html").unwrap();
-        let length = contents.len();
-        let response = format!("{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}");
-
-        stream.write_all(response.as_bytes()).unwrap();
-        stream.flush().unwrap();
+        handle_closing(&stop, &stream);
         return;
     }
 
@@ -75,6 +69,17 @@ fn handle_connection(mut stream: TcpStream, stop: Arc<AtomicBool>) {
     let contents = fs::read_to_string(filename).unwrap();
     let length = contents.len();
 
+    let response = format!("{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}");
+
+    stream.write_all(response.as_bytes()).unwrap();
+    stream.flush().unwrap();
+}
+
+fn handle_closing(stop: &Arc<AtomicBool>, mut stream: &TcpStream) {
+    stop.store(true, Ordering::Relaxed);
+    let status_line = "HTTP/1.1 200 OK";
+    let contents = fs::read_to_string("resources/html/closed.html").unwrap();
+    let length = contents.len();
     let response = format!("{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}");
 
     stream.write_all(response.as_bytes()).unwrap();
