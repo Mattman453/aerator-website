@@ -60,13 +60,20 @@ fn handle_connection(mut stream: TcpStream, stop: Arc<AtomicBool>) {
     let (status_line, filename) = process_request(request_line);
     println!("{filename}");
 
-    if filename.contains(".jpg") {
-        let mut file = File::open(filename).unwrap();
+    if filename.contains(".jpg") || filename.contains(".jpeg") || filename.contains(".png") {
+        let mut file = File::open(&filename).unwrap();
         let mut contents = Vec::new();
         file.read_to_end(&mut contents).unwrap();
         let length = contents.len();
+        let response: String;
 
-        let response = format!("HTTP/1.1 200 OK\r\nContent-Type: image/jpg\r\nContent-Length: {length}\r\n\r\n");
+        if filename.contains(".jpg") {
+            response = format!("HTTP/1.1 200 OK\r\nContent-Type: image/jpg\r\nContent-Length: {length}\r\n\r\n");
+        } else if filename.contains(".jpeg") {
+            response = format!("HTTP/1.1 200 OK\r\nContent-Type: image/jpeg\r\nContent-Length: {length}\r\n\r\n");
+        } else {
+            response = format!("HTTP/1.1 200 OK\r\nContent-Type: image/png\r\nContent-Length: {length}\r\n\r\n");
+        }
 
         stream.write_all(&response.as_bytes()).unwrap();
         stream.write_all(&contents).unwrap();
@@ -116,12 +123,22 @@ fn process_request(request_line: String) -> (String, String) {
         );
     };
 
-    if request_line.contains(".jpg") {
-        return (
-            "HTTP/1.1 200 OK".to_string(),
-            "resources/".to_owned() + request_line,
+    if request_line.contains(".jpg") || request_line.contains(".jpeg") || request_line.contains(".png") {
+        if request_line.contains("background") {
+            return (
+                "HTTP/1.1 200 OK".to_string(),
+                "resources/".to_owned() + request_line,
+                )
+        }
+        else {
+            return (
+                "HTTP/1.1 200 OK".to_string(),
+                "resources/html/".to_owned() + request_line,
             )
+        }
     }
+
+    let possible_requests = fs::read_to_string("resources/possible_requests.txt").unwrap();
 
     if request_line.contains(".html") {
         return (
@@ -130,7 +147,6 @@ fn process_request(request_line: String) -> (String, String) {
             )
     }
 
-    let possible_requests = fs::read_to_string("resources/possible_requests.txt").unwrap();
     if !possible_requests.contains(request_line) {
         return (
             "HTTP/1.1 404 NOT FOUND".to_string(),
