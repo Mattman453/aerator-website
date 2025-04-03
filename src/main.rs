@@ -47,7 +47,7 @@ fn handle_connection(stream: TcpStream, stop: Arc<AtomicBool>) {
     }
 
     if request_line.contains("q7w8e9r0") {
-        handle_closing(&stop, &stream);
+        handle_closing(&stop, stream);
         return;
     }
 
@@ -55,14 +55,14 @@ fn handle_connection(stream: TcpStream, stop: Arc<AtomicBool>) {
     // println!("{filename}");
 
     if filename.contains(".jpg") || filename.contains(".jpeg") || filename.contains(".png") {
-        handle_images(filename, &stream);
+        handle_images(filename, stream);
         return;
     }
 
-    handle_html(filename, status_line, &stream);
+    handle_html(filename, status_line, stream);
 }
 
-fn handle_html(filename: String, status_line: String, mut stream: &TcpStream) {
+fn handle_html(filename: String, status_line: String, mut stream: TcpStream) {
     let contents = fs::read_to_string(filename).unwrap();
     let length = contents.len();
 
@@ -86,7 +86,7 @@ fn unwrap_line(request_line: Option<Result<String, Error>>) -> String {
     request_line.unwrap()
 }
 
-fn handle_closing(stop: &Arc<AtomicBool>, mut stream: &TcpStream) {
+fn handle_closing(stop: &Arc<AtomicBool>, mut stream: TcpStream) {
     stop.store(true, Ordering::Relaxed);
     let status_line = "HTTP/1.1 200 OK";
     let contents = fs::read_to_string("resources/html/closed.html").unwrap();
@@ -97,7 +97,7 @@ fn handle_closing(stop: &Arc<AtomicBool>, mut stream: &TcpStream) {
     stream.flush().unwrap();
 }
 
-fn handle_images(filename: String, mut stream: &TcpStream) {
+fn handle_images(filename: String, mut stream: TcpStream) {
     let mut file = File::open(&filename).unwrap();
     let mut contents = Vec::new();
     file.read_to_end(&mut contents).unwrap();
