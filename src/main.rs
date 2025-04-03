@@ -65,7 +65,7 @@ fn handle_connection(mut stream: TcpStream, stop: Arc<AtomicBool>) {
     }
 
     let (status_line, filename) = process_request(request_line);
-    println!("{filename}");
+    // println!("{filename}");
 
     if filename.contains(".jpg") || filename.contains(".jpeg") || filename.contains(".png") {
         let mut file = File::open(&filename).unwrap();
