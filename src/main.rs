@@ -124,14 +124,14 @@ fn process_request(request_line: String) -> (String, String) {
     };
 
     if request_line.contains(".jpg") || request_line.contains(".jpeg") || request_line.contains(".png") {
-        if request_line.contains("background") {
-            return (
+        return if request_line.contains("background") {
+            (
                 "HTTP/1.1 200 OK".to_string(),
                 "resources/".to_owned() + request_line,
                 )
         }
         else {
-            return (
+            (
                 "HTTP/1.1 200 OK".to_string(),
                 "resources/html/".to_owned() + request_line,
             )
