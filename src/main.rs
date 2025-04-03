@@ -38,7 +38,7 @@ fn main() {
     println!("Shutting down.");
 }
 
-fn handle_connection(mut stream: TcpStream, stop: Arc<AtomicBool>) {
+fn handle_connection(stream: TcpStream, stop: Arc<AtomicBool>) {
     let buf_reader = BufReader::new(&stream);
     let request_line = buf_reader.lines().next(); //.unwrap().unwrap();
     let request_line = unwrap_line(request_line);
@@ -59,6 +59,10 @@ fn handle_connection(mut stream: TcpStream, stop: Arc<AtomicBool>) {
         return;
     }
 
+    handle_html(filename, status_line, &stream);
+}
+
+fn handle_html(filename: String, status_line: String, mut stream: &TcpStream) {
     let contents = fs::read_to_string(filename).unwrap();
     let length = contents.len();
 
